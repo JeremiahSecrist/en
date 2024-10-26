@@ -48,7 +48,7 @@ in
     nvidiaSettings = true;
 
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
 
   # Bootloader.
@@ -91,6 +91,9 @@ in
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
+  services.displayManager.sddm.wayland.enable = true;
+  programs.xwayland.enable = true;
+  # personal.desktop.displayManager.tuigreet.enable = true;
 
   # Configure keymap in X11
   services.xserver = {
@@ -122,7 +125,7 @@ in
 
   programs.starship.enable = true;
 
-  programs.fish.enable = true;
+  # programs.fish.enable = true;
 
   programs.noisetorch.enable = true;
 
@@ -186,6 +189,7 @@ in
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.ellie = {
     isNormalUser = true;
+    initialPassword = "ellie";
     description = "ellie";
     extraGroups = [
       "networkmanager"
