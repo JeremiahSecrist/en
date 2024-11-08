@@ -6,7 +6,7 @@
 }:
 {
   environment.systemPackages = with pkgs; [
-    latte-dock
+    # latte-dock
     vivaldi
     vivaldi-ffmpeg-codecs
     vscodium
@@ -15,7 +15,7 @@
     libreoffice-fresh
     neofetch
     discord
-    plasma-browser-integration
+    # plasma-browser-integration
     wineWowPackages.staging
     winetricks
     dosbox-staging
@@ -23,10 +23,10 @@
     appimage-run
     mullvad-vpn
     starship
-    libsForQt5.discover
+    # libsForQt5.discover
     # nix-software-center
     libsForQt5.ktorrent
-    kcalc
+    # kcalc
     lutris
     libsForQt5.kamoso
     blueman
@@ -38,7 +38,7 @@
   ];
   # virtualbox
   # virtualisation.virtualbox.host.enable = true;
-  users.extraGroups.vboxusers.members = [ "ellie" ];
+  # users.extraGroups.vboxusers.members = [ "ellie" ];
   # virtualisation.virtualbox.host.enableExtensionPack = true;
 
 }

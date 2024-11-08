@@ -88,10 +88,10 @@ in
   services.xserver.enable = true;
 
   # Enable the KDE Plasma Desktop Environment.
-  services.displayManager.sddm.enable = true;
-  # services.xserver.desktopManager.plasma5.enable = true;
+  services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
-  services.displayManager.sddm.wayland.enable = true;
+  programs.dconf.enable = true;
+  services.sysprof.enable = true;
   programs.xwayland.enable = true;
   # personal.desktop.displayManager.tuigreet.enable = true;
 
@@ -102,8 +102,6 @@ in
       variant = "";
     };
   };
-
-  # services.displayManager.defaultSession = "plasmawayland";
 
   services.hardware.openrgb = {
     package = pkgs.openrgb-with-all-plugins;
@@ -133,7 +131,7 @@ in
 
   services.flatpak.enable = true;
 
-  services.blueman.enable = true;
+  # services.blueman.enable = true;
 
   zramSwap.enable = true;
 
@@ -193,35 +191,6 @@ in
     isNormalUser = true;
     initialPassword = "ellie";
     description = "ellie";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-    ];
-    packages = with pkgs; [
-      firefox
-      kate
-      #  thunderbird
-    ];
-  };
-
-  users.users.gnomeellie = {
-    isNormalUser = true;
-    initialPassword = "ellie";
-    description = "gnomeellie";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-    ];
-    packages = with pkgs; [
-      firefox
-      kate
-      #  thunderbird
-    ];
-  };
-  users.users.notellie = {
-    isNormalUser = true;
-    initialPassword = "ellie";
-    description = "notellie";
     extraGroups = [
       "networkmanager"
       "wheel"
