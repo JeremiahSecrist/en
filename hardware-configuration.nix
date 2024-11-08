@@ -25,12 +25,12 @@
   # boot.kernelPackages = pkgs.linuxPackages_latest;
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/3cc73c9c-6485-472d-8556-395b40759130";
+    device = "/dev/disk/by-uuid/4684aecc-3fd5-4584-b205-353283ce9ba5";
     fsType = "ext4";
   };
 
   fileSystems."/boot/efi" = {
-    device = "/dev/disk/by-uuid/F321-F295";
+    device = "/dev/disk/by-uuid/8B73-D0E7";
     fsType = "vfat";
   };
 
