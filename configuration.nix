@@ -19,6 +19,7 @@ in
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ./modules/networking.nix
     # ./modules/tuigreet.nix
   ];
   # enable flakes support
@@ -26,6 +27,7 @@ in
     "nix-command"
     "flakes"
   ];
+  hardware.enableRedistributableFirmware = true;
   # Make sure opengl is enabled
   hardware.opengl = {
     enable = true;
@@ -64,9 +66,6 @@ in
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Enable networking
-  networking.networkmanager.enable = true;
-
   # Set your time zone.
   time.timeZone = "America/New_York";
 
@@ -90,7 +89,8 @@ in
 
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
+  # services.xserver.desktopManager.plasma5.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
   services.displayManager.sddm.wayland.enable = true;
   programs.xwayland.enable = true;
   # personal.desktop.displayManager.tuigreet.enable = true;
@@ -102,6 +102,8 @@ in
       variant = "";
     };
   };
+
+  # services.displayManager.defaultSession = "plasmawayland";
 
   services.hardware.openrgb = {
     package = pkgs.openrgb-with-all-plugins;
@@ -202,9 +204,38 @@ in
     ];
   };
 
+  users.users.gnomeellie = {
+    isNormalUser = true;
+    initialPassword = "ellie";
+    description = "gnomeellie";
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
+    packages = with pkgs; [
+      firefox
+      kate
+      #  thunderbird
+    ];
+  };
+  users.users.notellie = {
+    isNormalUser = true;
+    initialPassword = "ellie";
+    description = "notellie";
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
+    packages = with pkgs; [
+      firefox
+      kate
+      #  thunderbird
+    ];
+  };
+
   # Enable automatic login for the user.
-  services.displayManager.autoLogin.enable = true;
-  services.displayManager.autoLogin.user = "ellie";
+  # services.displayManager.autoLogin.enable = true;
+  # services.displayManager.autoLogin.user = "ellie";
 
   # Allow unfree packages
   # nixpkgs.config.allowUnfree = lib.mkDefault true;
