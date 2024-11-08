@@ -7,6 +7,7 @@
 {
   environment.systemPackages = with pkgs; [
     # latte-dock
+    gnome.gnome-tweaks
     vivaldi
     vivaldi-ffmpeg-codecs
     vscodium
