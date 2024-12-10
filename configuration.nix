@@ -22,33 +22,36 @@ in
     ./modules/networking.nix
     # ./modules/tuigreet.nix
   ];
-  home-manager.useGlobalPkgs = true;
-  home-manager.useUserPackages = true;
-  home-manager.users.ellie =
-    # { pkgs, ... }:
-    {
-      home.packages = [
-        # pkgs.atool
-        # pkgs.httpie
-      ];
-      stylix = {
-        iconTheme = {
-          enable = true;
-          dark = "BeautyLine";
-          light = "BeautyLine";
-          # gtk.iconTheme = {
-          # enable = true;
-          package = pkgs.beauty-line-icon-theme;
-          # name = "BeautyLine";
-          # };
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    backupFileExtension = "hm-bak";
+    users.ellie =
+      # { pkgs, ... }:
+      {
+        home.packages = [
+          # pkgs.atool
+          # pkgs.httpie
+        ];
+        stylix = {
+          iconTheme = {
+            enable = true;
+            dark = "BeautyLine";
+            light = "BeautyLine";
+            # gtk.iconTheme = {
+            # enable = true;
+            package = pkgs.beauty-line-icon-theme;
+            # name = "BeautyLine";
+            # };
+          };
         };
-      };
-      # programs.bash.enable = true;
+        # programs.bash.enable = true;
 
-      # The state version is required and should stay at the version you
-      # originally installed.
-      home.stateVersion = "24.11";
-    };
+        # The state version is required and should stay at the version you
+        # originally installed.
+        home.stateVersion = "24.11";
+      };
+  };
   stylix = {
     enable = true;
     image = ./modules/wallpapers/gimptestpink.png;
@@ -101,7 +104,7 @@ in
   boot.loader.grub.configurationLimit = 5;
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
+  systemd.network.wait-online.enable = true;
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
