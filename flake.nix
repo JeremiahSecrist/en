@@ -1,6 +1,11 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    stylix.url = "github:danth/stylix";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-24.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs =
     inputs:
@@ -18,6 +23,8 @@
           # config._module.args = {inherit inputs;};
           inherit system;
           modules = [
+            stylix.nixosModules.stylix
+            home-manager.nixosModules.home-manager
             { nixpkgs.config.allowUnfree = true; }
             ./configuration.nix
             ./packages.nix

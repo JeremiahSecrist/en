@@ -7,7 +7,8 @@
 {
   environment.systemPackages = with pkgs; [
     # latte-dock
-    gnome.gnome-tweaks
+    beauty-line-icon-theme
+    gnome-tweaks
     vivaldi
     vivaldi-ffmpeg-codecs
     vscodium

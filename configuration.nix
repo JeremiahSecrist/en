@@ -22,6 +22,47 @@ in
     ./modules/networking.nix
     # ./modules/tuigreet.nix
   ];
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
+  home-manager.users.ellie =
+    # { pkgs, ... }:
+    {
+      home.packages = [
+        # pkgs.atool
+        # pkgs.httpie
+      ];
+      stylix = {
+        iconTheme = {
+          enable = true;
+          dark = "BeautyLine";
+          light = "BeautyLine";
+          # gtk.iconTheme = {
+          # enable = true;
+          package = pkgs.beauty-line-icon-theme;
+          # name = "BeautyLine";
+          # };
+        };
+      };
+      # programs.bash.enable = true;
+
+      # The state version is required and should stay at the version you
+      # originally installed.
+      home.stateVersion = "24.11";
+    };
+  stylix = {
+    enable = true;
+    image = ./modules/wallpapers/gimptestpink.png;
+    polarity = "dark";
+    autoEnable = true;
+    targets = {
+      # gnome.enable = true;
+      grub = {
+        # enable = true;
+        useImage = true;
+      };
+      gtk.enable = true;
+    };
+  };
   # enable flakes support
   nix.settings.experimental-features = [
     "nix-command"
@@ -29,10 +70,9 @@ in
   ];
   hardware.enableRedistributableFirmware = true;
   # Make sure opengl is enabled
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
+    enable32Bit = true;
   };
 
   # Tell Xorg to use the nvidia driver (also valid for Wayland)
@@ -167,7 +207,7 @@ in
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  sound.enable = true;
+  # sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
