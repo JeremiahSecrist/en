@@ -29,6 +29,9 @@ in
     users.ellie =
       # { pkgs, ... }:
       {
+        programs = {
+          fish.enable = true;
+        };
         home.packages = [
           # pkgs.atool
           # pkgs.httpie
@@ -168,7 +171,7 @@ in
 
   programs.starship.enable = true;
 
-  # programs.fish.enable = true;
+  programs.fish.enable = true;
 
   programs.noisetorch.enable = true;
 
@@ -238,6 +241,7 @@ in
       "networkmanager"
       "wheel"
     ];
+    shell = pkgs.fish;
     packages = with pkgs; [
       firefox
       kate
