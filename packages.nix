@@ -7,6 +7,7 @@
 {
   environment.systemPackages = with pkgs; [
     # latte-dock
+    bottles
     beauty-line-icon-theme
     gnome-tweaks
     vivaldi
