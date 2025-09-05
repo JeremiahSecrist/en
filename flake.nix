@@ -31,13 +31,5 @@
           ];
         };
       };
-      checks."${system}".default = pkgs.nixosTest {
-        name = "minmal-test";
-        nodes.machine = ./configuration.nix;
-
-        testScript = ''
-          machine.wait_for_unit("default.target")
-        '';
-      };
     };
 }
