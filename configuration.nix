@@ -9,12 +9,6 @@
 }:
 let
 in
-# nix-software-center = import (pkgs.fetchFromGitHub {
-#   owner = "vlinkz";
-#   repo = "nix-software-center";
-#   rev = "0.1.2";
-#   sha256 = "xiqF1mP8wFubdsAQ1BmfjzCgOD3YZf7EGWl9i69FTls=";
-# }) {};
 {
   imports = [
     # Include the results of the hardware scan.
@@ -22,43 +16,39 @@ in
     ./modules/networking.nix
     # ./modules/tuigreet.nix
   ];
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    backupFileExtension = "hm-bak";
-    users.ellie =
-      # { pkgs, ... }:
-      {
-        programs = {
-          fish.enable = true;
-        };
-        home.packages = [
-          # pkgs.atool
-          # pkgs.httpie
-        ];
-        stylix = {
-          iconTheme = {
-            enable = true;
-            dark = "BeautyLine";
-            light = "BeautyLine";
-            # gtk.iconTheme = {
-            # enable = true;
-            package = pkgs.beauty-line-icon-theme;
-            # name = "BeautyLine";
-            # };
-          };
-        };
-        # programs.bash.enable = true;
 
-        # The state version is required and should stay at the version you
-        # originally installed.
-        home.stateVersion = "24.11";
+# pretty ui
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
+  home-manager.users.ellie =
+    # { pkgs, ... }:
+    {
+      home.packages = [
+        # pkgs.atool
+        # pkgs.httpie
+      ];
+      stylix = {
+        iconTheme = {
+          enable = true;
+          dark = "BeautyLine";
+          light = "BeautyLine";
+          # gtk.iconTheme = {
+          # enable = true;
+          package = pkgs.beauty-line-icon-theme;
+          # name = "BeautyLine";
+          # };
+        };
       };
-  };
+      # programs.bash.enable = true;
+
+      # The state version is required and should stay at the version you
+      # originally installed.
+      home.stateVersion = "24.11";
+    };
   stylix = {
     enable = true;
     image = ./modules/wallpapers/gimptestpink.png;
-    polarity = "light";
+    polarity = "dark";
     autoEnable = true;
     targets = {
       # gnome.enable = true;
@@ -69,165 +59,163 @@ in
       gtk.enable = true;
     };
   };
-  # enable flakes support
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-  hardware.enableRedistributableFirmware = true;
-  # Make sure opengl is enabled
-  hardware.graphics = {
+
+
+# Virtualization and VM tools
+programs.virt-manager.enable = true;
+users.groups.libvirtd.members = [ "ellie" ];
+
+virtualisation = {
+  libvirtd = {
     enable = true;
-    enable32Bit = true;
+    qemu = {
+      package = pkgs.qemu_kvm;
+      runAsRoot = true;
+      swtpm.enable = true;
+      ovmf = {
+        enable = true;
+        packages = [
+          (pkgs.OVMF.override {
+            secureBoot = true;
+            tpmSupport = true;
+          }).fd
+        ];
+      };
+    };
   };
+  spiceUSBRedirection.enable = true;
+};
 
-  # Tell Xorg to use the nvidia driver (also valid for Wayland)
-  services.xserver.videoDrivers = [ "nvidia" ];
+# vm testing
 
-  hardware.nvidia = {
-    # Modesetting is needed for most Wayland compositors
-    modesetting.enable = true;
+virtualisation.vmVariant = {
+  virtualisation = {
+    cores = 4;
+    memorySize = 4096;        # in MB
+    qemu.options = [
+      "-enable-kvm"           # hardware acceleration
+      "-vga virtio"           # accelerated graphics
+      "-display sdl,gl=on"    # OpenGL acceleration
+    ];
+  };
+};
 
-    # Use the open source version of the kernel module
-    # Only available on driver 515.43.04+
-    open = false;
 
-    # Enable the nvidia settings menu
-    nvidiaSettings = true;
+# Nix features
+nix.settings.experimental-features = [ "nix-command" "flakes" ];
+nix.gc = {
+  automatic = true;
+  dates = "weekly";
+  options = "--delete-older-than 7d";
+};
+nix.optimise.automatic = true;
 
-    # Optionally, you may need to select the appropriate driver version for your specific GPU.
+# Firmware and graphics
+xdg.portal.enable = true;
+hardware = {
+  enableRedistributableFirmware = true;
+  graphics.enable= true;  
+  nvidia = {
+    modesetting.enable = true;         # Needed for Wayland compositors
+    open = false;                      # Closed driver, not the open kernel module
+    nvidiaSettings = true;             # Expose nvidia-settings GUI
     package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
-
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
-  boot.kernelParams = [ "nouveau.modeset=0" ];
-  boot.loader.grub.configurationLimit = 5;
-  networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  systemd.network.wait-online.enable = true;
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Set your time zone.
-  time.timeZone = "America/New_York";
-
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "en_US.UTF-8";
-    LC_IDENTIFICATION = "en_US.UTF-8";
-    LC_MEASUREMENT = "en_US.UTF-8";
-    LC_MONETARY = "en_US.UTF-8";
-    LC_NAME = "en_US.UTF-8";
-    LC_NUMERIC = "en_US.UTF-8";
-    LC_PAPER = "en_US.UTF-8";
-    LC_TELEPHONE = "en_US.UTF-8";
-    LC_TIME = "en_US.UTF-8";
-  };
-
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
-  # Enable the KDE Plasma Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-  programs.dconf.enable = true;
-  services.sysprof.enable = true;
-  programs.xwayland.enable = true;
-  # personal.desktop.displayManager.tuigreet.enable = true;
-
-  # Configure keymap in X11
-  services.xserver = {
-    xkb = {
-      layout = "us";
-      variant = "";
+  bluetooth.enable = true;
+  
+};
+services.pulseaudio.enable = false;
+# X11/Wayland + DE
+services.xserver = {
+  enable = true;
+  videoDrivers = [ "nvidia" ];
+  displayManager.gdm.enable = true;
+  desktopManager.gnome.enable = true;
+  xkb.layout = "us";
+};
+programs = {
+  dconf.enable = true;
+  xwayland.enable = true;
+  fish.enable = true;
+  bash.interactiveShellInit = ''
+    if [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" && -z ''${BASH_EXECUTION_STRING} ]]
+    then
+      shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=""
+      exec ${pkgs.fish}/bin/fish $LOGIN_OPTION
+    fi
+  '';
+  rog-control-center.enable = true;
+  appimage = {
+    enable = true;
+    binfmt = true;
+    package = pkgs.appimage-run.override {
+      extraPkgs = pkgs: with pkgs; [ fusePackages.fuse_2 ];
     };
   };
+  starship.enable = true;
+  noisetorch.enable = true;
+  adb.enable = true;
+  openvpn3.enable = true;
+};
 
-  services.hardware.openrgb = {
-    package = pkgs.openrgb-with-all-plugins;
-    enable = true;
-    motherboard = "amd";
+# Bootloader & kernel
+boot = {
+  loader = {
+    systemd-boot.enable = true;
+    efi = {
+      canTouchEfiVariables = true;
+      efiSysMountPoint = "/boot/efi";
+    };
+    grub.configurationLimit = 5;
   };
+  kernelParams = [ "nouveau.modeset=0" ];
+};
 
-  services.fstrim = {
-    enable = true;
-    interval = "weekly";
+# Networking
+networking.hostName = "nixos";
+systemd.network.wait-online.enable = lib.mkForce false;
+systemd.services.NetworkManager-wait-online.enable = false;
+
+# Time & locale
+time.timeZone = "America/New_York";
+i18n = {
+  defaultLocale = "en_US.UTF-8";
+  extraLocaleSettings = let en = "en_US.UTF-8"; in {
+    LC_ADDRESS = en; LC_IDENTIFICATION = en; LC_MEASUREMENT = en;
+    LC_MONETARY = en; LC_NAME = en; LC_NUMERIC = en; LC_PAPER = en;
+    LC_TELEPHONE = en; LC_TIME = en;
   };
+};
 
-  services.asusd = {
+# Extra system services
+services = {
+  sysprof.enable = true;
+  hardware.openrgb = { package = pkgs.openrgb-with-all-plugins; enable = true; motherboard = "amd"; };
+  fstrim = { enable = true; interval = "weekly"; };
+  asusd = { enable = true; enableUserService = true; };
+  mullvad-vpn.enable = true;
+  flatpak.enable = true;
+  printing.enable = true;
+  pipewire = {
     enable = true;
-    enableUserService = true;
+    alsa = { enable = true; support32Bit = true; };
+    pulse.enable = true;
   };
-
-  services.mullvad-vpn.enable = true;
-
-  programs.rog-control-center.enable = true;
-
-  programs.starship.enable = true;
-
-  programs.fish.enable = true;
-
-  programs.noisetorch.enable = true;
-
-  services.flatpak.enable = true;
-
-  # services.blueman.enable = true;
-
-  zramSwap.enable = true;
-
-  programs.openvpn3.enable = true;
-
-  hardware.bluetooth.enable = true;
-
-  systemd.services.NetworkManager-wait-online.enable = false;
-
-  services.supergfxd = {
+  supergfxd = {
     enable = true;
     settings = {
-      always_reboot = false;
-      no_logind = true;
-      mode = "Integrated";
-      vfio_enable = false;
-      vfio_save = false;
-      logout_timeout_s = 180;
-      hotplug_type = "None";
+      always_reboot = false; no_logind = true; mode = "Integrated";
+      vfio_enable = false; vfio_save = false;
+      logout_timeout_s = 180; hotplug_type = "None";
     };
   };
+};
 
-  # personal.desktop.displayManager.tuigreet.enable = true;
+# Misc system opts
+security.rtkit.enable = true;
+zramSwap.enable = true;
 
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
-
-  nix.optimise.automatic = true;
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
-  # Enable sound with pipewire.
-  # sound.enable = true;
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
-  };
+environment.sessionVariables = { QT_PLUGIN_PATH = ""; };
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -240,11 +228,11 @@ in
     extraGroups = [
       "networkmanager"
       "wheel"
+      "adbusers"
+      "kvm"
     ];
-    shell = pkgs.fish;
     packages = with pkgs; [
       firefox
-      kate
       #  thunderbird
     ];
   };

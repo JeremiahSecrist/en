@@ -11,6 +11,8 @@
     beauty-line-icon-theme
     gnome-tweaks
     vivaldi
+    git
+    unciv
     vivaldi-ffmpeg-codecs
     vscodium
     clementine
@@ -28,13 +30,13 @@
     starship
     # libsForQt5.discover
     # nix-software-center
-    libsForQt5.ktorrent
     # kcalc
     lutris
-    libsForQt5.kamoso
     blueman
     bluez
+    gparted
     vlc
+    rustdesk-flutter
 
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     #  wget
