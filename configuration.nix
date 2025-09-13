@@ -23,6 +23,11 @@ in
   home-manager.users.ellie =
     # { pkgs, ... }:
     {
+      xdg = {
+          dataFile."themes/Stylix/gnome-shell/gnome-shell.css" = lib.mkForce {
+            source = ./gnome/gnome-shell.css;
+          };
+      };
       home.packages = [
         # pkgs.atool
         # pkgs.httpie
