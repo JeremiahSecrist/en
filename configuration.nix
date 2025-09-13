@@ -51,12 +51,13 @@ in
     polarity = "light";
     autoEnable = true;
     targets = {
-      gnome.enable = true;
+      gnome.enable = false;
       grub = {
         # enable = true;
         useImage = true;
       };
-      gtk.enable = true;
+      # gtk.enable = true;
+      qt.enable = false;
     };
   };
 
@@ -114,7 +115,7 @@ nix.optimise.automatic = true;
 xdg.portal.enable = true;
 hardware = {
   enableRedistributableFirmware = true;
-  graphics.enable= true;  
+  graphics.enable= true;
   nvidia = {
     modesetting.enable = true;         # Needed for Wayland compositors
     open = false;                      # Closed driver, not the open kernel module
@@ -122,7 +123,7 @@ hardware = {
     package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
   bluetooth.enable = true;
-  
+
 };
 services.pulseaudio.enable = false;
 # X11/Wayland + DE
