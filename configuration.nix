@@ -48,10 +48,10 @@ in
   stylix = {
     enable = true;
     image = ./modules/wallpapers/gimptestpink.png;
-    polarity = "dark";
+    polarity = "light";
     autoEnable = true;
     targets = {
-      # gnome.enable = true;
+      gnome.enable = true;
       grub = {
         # enable = true;
         useImage = true;
